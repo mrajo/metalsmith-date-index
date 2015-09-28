@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+	<head>
+		<title>{{ title|title }}</title>
+	</head>
+	<body>
+		<ul>
+			{% for link in index %}
+				<li><a href="{{ link.path }}">{{ link.title }}</a></li>
+			{% endfor %}
+		</ul>
+	</body>
+</html>
