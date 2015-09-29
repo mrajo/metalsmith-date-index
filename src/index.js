@@ -1,6 +1,7 @@
 'use strict';
 
 var fs = require('fs-extra');
+var sep = require('path').sep;
 var join = require('path').join;
 var async = require('async');
 var _ = require('lodash');
@@ -10,6 +11,10 @@ function config(params) {
         pattern: '([\\d]{4})/([\\d]{2})/([\\d]{2})/(.+\\.html)',
         layout: 'index.html'
     };
+
+    if (sep === '\\') {
+        options.pattern = '([\\d]{4})\\\\([\\d]{2})\\\\([\\d]{2})\\\\(.+\\.html)';
+    }
 
     if ('object' == typeof params) options = params;
     if ('string' == typeof string) {
@@ -33,13 +38,13 @@ function plugin(params) {
             var regexp = new RegExp(options.pattern);
             var match = regexp.exec(path);
 
-            if (regexp.test(path)) {
+            if (match != null) {
                 if (index_by_year[match[1]] == null) {
                     index_by_year[match[1]] = [];
                 }
                 index_by_year[match[1]].push({
                     title: file.title,
-                    path: path
+                    path: path.replace(/\\/g, '/')
                 });
 
                 var month_key = match[1] + '/' + match[2];
@@ -48,7 +53,7 @@ function plugin(params) {
                 }
                 index_by_month[month_key].push({
                     title: file.title,
-                    path: path
+                    path: path.replace(/\\/g, '/')
                 });
 
                 return true;
@@ -61,7 +66,7 @@ function plugin(params) {
 
             files[new_path] = {
                 path: datePart,
-                mode: '0666',  
+                mode: '0666',
                 layout: options.layout,
                 index: index,
                 contents: new Buffer('')
