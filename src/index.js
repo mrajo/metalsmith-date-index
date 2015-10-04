@@ -8,7 +8,7 @@ var _ = require('lodash');
 
 function config(params) {
     var options = {
-        pattern: '([\\d]{4})/([\\d]{2})/([\\d]{2})/(.+\\.html)',
+        pattern: '(.*/)?([\\d]{4})/([\\d]{2})/([\\d]{2})/(.+\\.html)',
         layout: 'index.html'
     };
 
@@ -16,7 +16,7 @@ function config(params) {
         options.pattern = '([\\d]{4})\\\\([\\d]{2})\\\\([\\d]{2})\\\\(.+\\.html)';
     }
 
-    if ('object' == typeof params) options = params;
+    if ('object' == typeof params) Object.assign(options, params);
     if ('string' == typeof string) {
         options = {
             pattern: params
@@ -32,25 +32,30 @@ function plugin(params) {
     return function (files, metalsmith, done) {
         var index_by_year = {};
         var index_by_month = {};
+        var section;
 
         // get files created by permalinks :date pattern
-        var ff = _.filter(files, function (file, path) {
+        _.filter(files, function (file, path) {
             var regexp = new RegExp(options.pattern);
             var match = regexp.exec(path);
 
             if (match != null) {
-                if (index_by_year[match[1]] == null) {
-                    index_by_year[match[1]] = [];
+                if (match[1]) section = match[1];
+
+                if (index_by_year[match[2]] == null) {
+                    index_by_year[match[2]] = [];
                 }
-                index_by_year[match[1]].push({
+
+                index_by_year[match[2]].push({
                     title: file.title,
                     path: path.replace(/\\/g, '/')
                 });
 
-                var month_key = match[1] + '/' + match[2];
+                var month_key = match[2] + '/' + match[3];
                 if (index_by_month[month_key] == null) {
                     index_by_month[month_key] = [];
                 }
+
                 index_by_month[month_key].push({
                     title: file.title,
                     path: path.replace(/\\/g, '/')
@@ -62,7 +67,7 @@ function plugin(params) {
         });
 
         var create_index = function (index, datePart, done) {
-            var new_path = datePart + '/index.html';
+            var new_path = join(section, datePart, 'index.html');
 
             files[new_path] = {
                 path: datePart,
