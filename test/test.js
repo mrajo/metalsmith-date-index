@@ -2,15 +2,18 @@
 
 var assert = require('assert');
 var dir_equal = require('assert-dir-equal');
-var Metalsmith = require('metalsmith');
-var markdown = require('metalsmith-markdown-remarkable');
-var permalinks = require('metalsmith-permalinks');
-var layout = require('metalsmith-layouts');
-var indexer = require('../src/plugin.js');
 var join = require('path').join;
 var read = require('fs').readFileSync;
 var buffer_equal = require('buffer-equal');
 var utf8 = require('is-utf8');
+
+var Metalsmith = require('metalsmith');
+var markdown = require('metalsmith-markdown-remarkable');
+var permalinks = require('metalsmith-permalinks');
+var layout = require('metalsmith-layouts');
+var htmlmin = require('metalsmith-html-minifier');
+
+var indexer = require('../src/plugin.js');
 
 function assertDirsEqual(src, done) {
     return function (err) {
@@ -49,6 +52,7 @@ describe('metalsmith-date-indexer', function () {
                 engine: "swig",
                 default: "main.html"
             }))
+            .use(htmlmin())
             .build(assertDirsEqual(src, done));
     });
 });

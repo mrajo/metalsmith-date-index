@@ -15,7 +15,7 @@ function config(params) {
     };
 
     if (sep === '\\') {
-        options.pattern = '([\\d]{4})\\\\([\\d]{2})\\\\([\\d]{2})\\\\(.+\\.html)';
+        options.pattern = '(.*/)?([\\d]{4})\\\\([\\d]{2})\\\\([\\d]{2})\\\\(.+\\.html)';
     }
 
     if ('object' == typeof params) Object.assign(options, params);
@@ -42,7 +42,7 @@ function plugin(params) {
             var match = regexp.exec(path);
 
             if (match != null) {
-                if (match[1]) section = match[1];
+                section = match[1] || '.';
 
                 if (index_by_year[match[2]] == null) {
                     index_by_year[match[2]] = [];
@@ -69,12 +69,14 @@ function plugin(params) {
         });
 
         var make_title = function (section, year, month) {
-            var sect = section.charAt(0).toUpperCase() + section.slice(1, -1);
+            var sect = (section !== '.') ?
+                        section.charAt(0).toUpperCase() + section.slice(1, -1) + ' ' :
+                        '';
 
             if (month) {
-                return sect + ' Archive for ' + month + ' ' + year;
+                return sect + 'Archive for ' + month + ' ' + year;
             } else {
-                return sect + ' Archive for ' + year;
+                return sect + 'Archive for ' + year;
             }
         };
 
@@ -83,7 +85,7 @@ function plugin(params) {
             var date = dateParts.split('/');
             var year = date[0];
 
-            // month isn't available for year indexes, but needs to be passed 
+            // month isn't available for year indexes, but needs to be passed
             // as metadata. make an object with month key to pass to Object.assign
             var month_metadata = {};
             var month;
