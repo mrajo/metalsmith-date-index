@@ -2,7 +2,7 @@
   "name": "metalsmith-date-index",
   "version": "1.0.0",
   "description": "A Metalsmith plugin for creating index files for the year and month folders created by metalsmith-permalinks :date pattern.",
-  "main": "src/index.js",
+  "main": "src/plugin.js",
   "repository": "mrajo/metalsmith-date-index",
   "author": {
     "name": "mrajo",
