@@ -5,11 +5,13 @@ var sep = require('path').sep;
 var join = require('path').join;
 var async = require('async');
 var _ = require('lodash');
+var moment = require('moment');
 
 function config(params) {
     var options = {
         pattern: '(.*/)?([\\d]{4})/([\\d]{2})/([\\d]{2})/(.+\\.html)',
-        layout: 'index.html'
+        layout: 'index.html',
+        metadata: {}
     };
 
     if (sep === '\\') {
@@ -66,16 +68,43 @@ function plugin(params) {
             return false;
         });
 
-        var create_index = function (index, datePart, done) {
-            var new_path = join(section, datePart, 'index.html');
+        var make_title = function (section, year, month) {
+            var sect = section.charAt(0).toUpperCase() + section.slice(1, -1);
 
-            files[new_path] = {
-                path: datePart,
-                mode: '0666',
-                layout: options.layout,
-                index: index,
-                contents: new Buffer('')
-            };
+            if (month) {
+                return sect + ' Archive for ' + month + ' ' + year;
+            } else {
+                return sect + ' Archive for ' + year;
+            }
+        };
+
+        var create_index = function (index, dateParts, done) {
+            var new_path = join(section, dateParts, 'index.html');
+            var date = dateParts.split('/');
+            var year = date[0];
+
+            // month isn't available for year indexes, but needs to be passed 
+            // as metadata. make an object with month key to pass to Object.assign
+            var month_metadata = {};
+            var month;
+
+            if (date.length == 2) {
+                month = month_metadata.month = moment(dateParts, 'YYYY/MM').format('MMMM');
+            }
+
+            files[new_path] = Object.assign(
+                {
+                    path: dateParts,
+                    mode: '0666',
+                    title: make_title(section, year, month),
+                    year: year,
+                    layout: options.layout,
+                    pages: index,
+                    contents: new Buffer('')
+                },
+                month_metadata,
+                options.metadata
+            );
 
             done();
         };
