@@ -6,6 +6,7 @@ var join = require('path').join;
 var async = require('async');
 var _ = require('lodash');
 var moment = require('moment');
+if (!Object.assign) Object.assign = require('object-assign');
 
 function config(params) {
     var options = {
