@@ -16,15 +16,11 @@ function config(params) {
     };
 
     if (sep === '\\') {
-        options.pattern = '(.*/)?([\\d]{4})\\\\([\\d]{2})\\\\([\\d]{2})\\\\(.+\\.html)';
+        options.pattern = '(.*\)?([\\d]{4})\\\\([\\d]{2})\\\\([\\d]{2})\\\\(.+\\.html)';
     }
 
     if ('object' == typeof params) Object.assign(options, params);
-    if ('string' == typeof string) {
-        options = {
-            pattern: params
-        };
-    };
+    if ('string' == typeof string) Object.assign(options, { pattern: params });
 
     return options;
 }
