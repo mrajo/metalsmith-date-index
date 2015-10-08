@@ -13,7 +13,6 @@
     "async": "^1.2.0",
     "fs-extra": "^0.22.1",
     "lodash": "^3.10.1",
-    "metalsmith-html-minifier": "^1.1.0",
     "moment": "^2.10.6",
     "object-assign": "^4.0.1"
   },
@@ -22,6 +21,7 @@
     "buffer-equal": "0.0.1",
     "is-utf8": "^0.2.0",
     "metalsmith": "^1.7.0",
+    "metalsmith-html-minifier": "^1.1.0",
     "metalsmith-layouts": "^1.4.1",
     "metalsmith-markdown-remarkable": "^0.1.1",
     "metalsmith-permalinks": "^0.4.0",
