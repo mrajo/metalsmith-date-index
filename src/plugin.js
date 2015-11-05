@@ -45,20 +45,14 @@ function plugin(params) {
                     index_by_year[match[2]] = [];
                 }
 
-                index_by_year[match[2]].push({
-                    title: file.title,
-                    path: path.replace(/\\/g, '/')
-                });
+                index_by_year[match[2]].push(file);
 
                 var month_key = match[2] + '/' + match[3];
                 if (index_by_month[month_key] == null) {
                     index_by_month[month_key] = [];
                 }
 
-                index_by_month[month_key].push({
-                    title: file.title,
-                    path: path.replace(/\\/g, '/')
-                });
+                index_by_month[month_key].push(file);
 
                 return true;
             }
