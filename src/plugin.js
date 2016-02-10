@@ -12,6 +12,7 @@ function config(params) {
     var options = {
         pattern: '(.*/)?([\\d]{4})/([\\d]{2})/([\\d]{2})/(.+\\.html)',
         layout: 'index.html',
+        sortkey: 'timestamp',
         metadata: {}
     };
 
@@ -106,8 +107,10 @@ function plugin(params) {
             [
                 function (callback) {
                     _.forIn(index_by_year, function (index, year) {
-                        index = _.sortBy(index, function (file) {
-                            return file.path;
+                        index = index.sort(function (a, b) {
+                            if (a[options.sortkey] < b[options.sortkey]) return -1;
+                            if (a[options.sortkey] > b[options.sortkey]) return 1;
+                            return 0;
                         });
                     });
 
@@ -115,8 +118,10 @@ function plugin(params) {
                 },
                 function (callback) {
                     _.forIn(index_by_month, function (index, year) {
-                        index = _.sortBy(index, function (file) {
-                            return file.path;
+                        index = index.sort(function (a, b) {
+                            if (a[options.sortkey] < b[options.sortkey]) return -1;
+                            if (a[options.sortkey] > b[options.sortkey]) return 1;
+                            return 0;
                         });
                     });
 
